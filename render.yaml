@@ -1,0 +1,16 @@
+# Render 설정 — Render 대시보드에서 New → Blueprint 로 이 저장소를 고르면 자동으로 이대로 만들어져요.
+services:
+  - type: web
+    name: myorbit
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SUBSCRIBE_WEBHOOK_URL
+        sync: false

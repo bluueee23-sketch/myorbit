@@ -26,6 +26,7 @@ const API = {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
+    if (url.pathname === '/healthz') { res.writeHead(200, { 'content-type': 'text/plain' }).end('ok'); return; }
     if (API[url.pathname]) {
       const mod = await API[url.pathname]();
       const handler = mod[req.method];
@@ -51,7 +52,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`나의 궤도 → http://localhost:${PORT}`);
   console.log(process.env.ANTHROPIC_API_KEY ? 'AI 해석: 켜짐' : 'AI 해석: 꺼짐 (.env 에 ANTHROPIC_API_KEY 를 넣으면 켜져요)');
 });
