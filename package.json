@@ -1,0 +1,13 @@
+{
+  "name": "myorbit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "나의 궤도 (MY ORBIT) — 생년월일로 나를 주인공으로 한 사주 매거진을 발행하는 웹앱",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

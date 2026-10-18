@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>나의 궤도 · MY ORBIT</title>
+  <meta name="description" content="생년월일만 넣으면 나를 주인공으로 한 사주 잡지가 발행돼요. 무료 AI 사주 매거진.">
+  <meta name="theme-color" content="#A63A24">
+  <meta property="og:title" content="나의 궤도 · MY ORBIT">
+  <meta property="og:description" content="당신을 취재한 사주 매거진. 생년월일만 넣으면 창간호 발행.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23A63A24'/%3E%3Cellipse cx='32' cy='32' rx='24' ry='10' fill='none' stroke='%23EBA898' stroke-width='3' transform='rotate(-25 32 32)'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23EBA898'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Han+Sans&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@400;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="phone" id="phone">
+
+  <!-- 1. 신분 -->
+  <section class="screen" id="s-who">
+    <div class="top"><span>나의 궤도</span><span>01 / 03</span></div>
+    <div class="progress"><i class="on"></i><i></i><i></i></div>
+    <h1 class="q">지금 당신은</h1>
+    <p class="hint">상황에 맞춰 해석의 초점을 잡아드려요.</p>
+    <div class="who-list" id="who-list"></div>
+  </section>
+
+  <!-- 2. 고민 -->
+  <section class="screen" id="s-worry" hidden>
+    <div class="top"><button type="button" data-go="who">← 이전</button><span>02 / 03</span></div>
+    <div class="progress"><i class="on"></i><i class="on"></i><i></i></div>
+    <div class="chips"><span class="chip" id="worry-chip"></span></div>
+    <h1 class="q" id="worry-q"></h1>
+    <p class="hint">하나만 골라주세요. 이번 호 특집이 돼요.</p>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <!-- 3. 생년월일 -->
+  <section class="screen" id="s-birth" hidden>
+    <div class="top"><button type="button" data-go="worry">← 이전</button><span>03 / 03</span></div>
+    <div class="progress"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <div class="chips" id="birth-chips"></div>
+    <h1 class="q">언제<br>태어났나요?</h1>
+    <div class="form">
+      <label class="field" for="f-name">NAME 표지에 실릴 이름
+        <input class="name" id="f-name" type="text" placeholder="이름 또는 닉네임" maxlength="10" autocomplete="off">
+      </label>
+      <div class="pills">
+        <div class="pillset" id="cal"></div>
+        <div class="pillset" id="sex"></div>
+      </div>
+      <label class="field" for="f-date">BIRTH 생년월일
+        <input id="f-date" type="text" inputmode="numeric" placeholder="1998.03.14" maxlength="10" autocomplete="off">
+      </label>
+      <button type="button" class="check" id="f-leap" aria-pressed="false" hidden><i></i>윤달이에요</button>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <label class="field" for="f-time">TIME 태어난 시간
+          <input id="f-time" type="text" inputmode="numeric" placeholder="04:30" maxlength="5" autocomplete="off">
+        </label>
+        <button type="button" class="check" id="f-unknown" aria-pressed="false"><i></i>시간을 몰라요 (시주 없이 볼게요)</button>
+      </div>
+    </div>
+    <p class="err" id="err" role="status"></p>
+    <div class="grow"></div>
+    <button type="button" class="cta" id="birth-next"><span>내 궤도 그리기</span><span aria-hidden="true">→</span></button>
+  </section>
+
+  <!-- 4. 표지 -->
+  <section class="screen" id="s-cover" hidden>
+    <div class="mast"><h2>My<br>Orbit</h2></div>
+    <div class="lineup" id="lineup"></div>
+    <div class="photo cover-photo">
+      <canvas id="cv-cover" aria-hidden="true"></canvas>
+      <div class="cover-tag" id="cover-tag"></div>
+      <div class="cover-over">
+        <span class="ilju" id="cover-ilju"></span>
+        <span class="who-line" id="cover-who"></span>
+        <span class="meta" id="cover-meta"></span>
+      </div>
+    </div>
+    <div class="feature-line" id="cover-feature"></div>
+    <div class="row2">
+      <button type="button" class="cta" data-go="inside">본문 읽기 →</button>
+      <button type="button" class="ghost" id="share">표지 공유</button>
+    </div>
+  </section>
+
+  <!-- 5. 본문 -->
+  <section class="screen paper" id="s-inside" hidden>
+    <div class="top"><button type="button" data-go="cover">← 표지</button><span id="in-top">FEATURE</span><span>P. 04</span></div>
+    <div class="kicker" id="in-kicker"></div>
+    <h2 class="head" id="in-head"></h2>
+    <p class="stand" id="in-stand"></p>
+    <div class="byline"><span>글 — 궤도 에디터</span><span class="ai-state" id="ai-state"></span></div>
+
+    <figure class="fig">
+      <div class="photo"><canvas id="cv-1" aria-hidden="true"></canvas><span class="film" id="film-1"></span></div>
+      <figcaption id="cap-1"></figcaption>
+    </figure>
+
+    <div class="body" id="in-lede"></div>
+
+    <div class="sec"><span>01</span><h3>원국, 여덟 글자의 지도</h3></div>
+    <div class="wonguk" id="wonguk"></div>
+    <div class="cap" id="in-cap"></div>
+    <div class="body" id="in-profile"></div>
+
+    <blockquote class="pull" id="in-quote"></blockquote>
+
+    <div class="sec"><span>02</span><h3>다섯 기운의 밸런스</h3></div>
+    <div class="bars" id="bars"></div>
+    <div class="body" id="in-balance"></div>
+
+    <figure class="fig wide">
+      <div class="photo"><canvas id="cv-2" aria-hidden="true"></canvas><span class="film" id="film-2"></span></div>
+      <figcaption id="cap-2"></figcaption>
+    </figure>
+
+    <div class="sec"><span>03</span><h3 id="in-feat-h">이번 호 특집</h3></div>
+    <div class="feat" id="in-feat"></div>
+
+    <div class="prescribe" id="in-rx"></div>
+
+    <div class="more">
+      <small>NEXT ISSUE — 곧 열려요</small>
+      <b>이번 호에 실리지 못한 기사</b>
+      <ul id="more-list"></ul>
+      <p>다른 고민 기사, 궁합, 2027 신년운세를 준비하고 있어요. 아래에 메일을 남기면 열릴 때 가장 먼저 알려드려요.</p>
+    </div>
+
+    <div class="ask">
+      <small>ASK — 내 원국에 물어보기 · 준비 중</small>
+      <b>Ask me</b>
+      <span id="ask-line"></span>
+    </div>
+    <div class="mail">
+      <small>KEEP THIS ISSUE</small>
+      <b>이번 호, 메일로 받아두기</b>
+      <p>창을 닫아도 다시 볼 수 있게 이번 호 링크를 보내드려요.</p>
+      <form id="mail-form" novalidate>
+        <label class="em" for="f-email">EMAIL
+          <input id="f-email" type="email" placeholder="you@example.com" autocomplete="email">
+        </label>
+        <label class="opt" for="f-monthly"><input id="f-monthly" type="checkbox" checked>다음 달 호가 나오면 알려주세요</label>
+        <label class="opt" for="f-agree"><input id="f-agree" type="checkbox">이메일 수집·이용에 동의해요 (발송 목적, 구독 해지 시 삭제)</label>
+        <button type="submit" id="mail-btn">메일로 받기</button>
+        <div class="msg" id="mail-msg" role="status"></div>
+      </form>
+    </div>
+    <p class="endnote" id="endnote"></p>
+    <button type="button" class="restart" id="restart">처음부터 다시 해보기</button>
+  </section>
+
+  <div class="sheet" id="sheet" hidden>
+    <img id="sheet-img" alt="인스타 스토리용 내 표지">
+    <p>이미지를 길게 눌러 저장하거나, 아래 버튼으로 내려받아 스토리에 올려보세요.</p>
+    <a id="sheet-dl" download="my-orbit-cover.png">이미지 저장</a>
+    <button type="button" id="sheet-close">닫기</button>
+  </div>
+  <div class="toast" id="toast" hidden role="status"></div>
+</div>
+
+<script src="vendor/lunar.js"></script>
+<script src="saju.js"></script>
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
